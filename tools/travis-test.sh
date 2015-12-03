@@ -94,16 +94,22 @@ export PIP
 if [ -n "$USE_WHEEL" ] && [ $# -eq 0 ]; then
   # Build wheel
   $PIP install wheel
+  # ensure that the pip / setuptools versions deployed inside the venv are recent enough
+  $PIP install -U virtualenv
   $PYTHON setup.py bdist_wheel
   # Make another virtualenv to install into
-  virtualenv --python=python venv-for-wheel
+  virtualenv --python=`which $PYTHON` venv-for-wheel
   . venv-for-wheel/bin/activate
   # Move out of source directory to avoid finding local numpy
   pushd dist
-  $PIP install --pre --no-index --upgrade --find-links=. numpy
-  $PIP install nose
+  pip install --pre --use-wheel --no-index --upgrade --find-links=. numpy
+  pip install nose
   popd
   run_test
+  if [[ ( "$TRAVIS_BRANCH" == "master" ) && ( "$TRAVIS_PULL_REQUEST" == "false" ) ]]; then
+      pip install wheelhouse_uploader
+      python -m wheelhouse_uploader upload --local-folder $TRAVIS_BUILD_DIR/dist/ travis-dev-wheels
+  fi
 elif [ "$USE_CHROOT" != "1" ]; then
   setup_base
   run_test
