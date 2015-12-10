@@ -78,3 +78,6 @@ before_install:
 
 script:
   - ./tools/travis-test.sh
+
+after_success:
+  - ./tools/travis-upload-wheel.sh

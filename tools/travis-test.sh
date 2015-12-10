@@ -106,10 +106,6 @@ if [ -n "$USE_WHEEL" ] && [ $# -eq 0 ]; then
   pip install nose
   popd
   run_test
-  if [[ ( "$TRAVIS_BRANCH" == "master" ) && ( "$TRAVIS_PULL_REQUEST" == "false" ) ]]; then
-      pip install wheelhouse_uploader
-      python -m wheelhouse_uploader upload --local-folder $TRAVIS_BUILD_DIR/dist/ travis-dev-wheels
-  fi
 elif [ "$USE_CHROOT" != "1" ]; then
   setup_base
   run_test
