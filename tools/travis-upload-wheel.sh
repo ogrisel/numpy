@@ -3,7 +3,7 @@ set -ex
 
 export CLOUD_CONTAINER_NAME=travis-dev-wheels
 
-if [[ ( $USE_WHELL == 1 ) && \
+if [[ ( $USE_WHEEL == 1 ) && \
       ( "$TRAVIS_BRANCH" == "travis-wheels-after-success" ) && \
       ( "$TRAVIS_PULL_REQUEST" == "false" ) ]]; then
     pip install wheelhouse_uploader
