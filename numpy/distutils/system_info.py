@@ -2417,26 +2417,22 @@ class accelerate_info(system_info):
             if get_platform()[-4:] == 'i386' or 'intel' in get_platform() or \
                'x86_64' in get_platform() or \
                'i386' in platform.platform():
-                intel = 1
+                simd_flags = ['-msse3']
+            elif "ppc" in get_platform().lower():
+                simd_flags = ['-faltivec']
             else:
-                intel = 0
+                simd_flags = []
             if (os.path.exists('/System/Library/Frameworks'
                               '/Accelerate.framework/') and
                     'accelerate' in libraries):
-                if intel:
-                    args.extend(['-msse3'])
-                else:
-                    args.extend(['-faltivec'])
+                args.extend(simd_flags)
                 args.extend([
                     '-I/System/Library/Frameworks/vecLib.framework/Headers'])
                 link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
             elif (os.path.exists('/System/Library/Frameworks'
                                  '/vecLib.framework/') and
                       'veclib' in libraries):
-                if intel:
-                    args.extend(['-msse3'])
-                else:
-                    args.extend(['-faltivec'])
+                args.extend(simd_flags)
                 args.extend([
                     '-I/System/Library/Frameworks/vecLib.framework/Headers'])
                 link_args.extend(['-Wl,-framework', '-Wl,vecLib'])
